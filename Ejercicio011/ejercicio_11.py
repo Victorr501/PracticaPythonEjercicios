@@ -5,3 +5,14 @@
 #   - Si el números es negativo, usa continue para saltarlo
 #   - Si el número es 0, usa break para detener el bucle
 #   - En cualquier otro caso, muestra el número por pantalla
+
+lista_numeros = [1, 3, -5, 4, 0, 5]
+
+for numero in lista_numeros:
+    if numero < 0:
+        continue
+    if numero == 0:
+        break
+    if numero > 0:
+        print(numero)
+        
