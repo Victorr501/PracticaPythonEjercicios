@@ -10,3 +10,16 @@
 #   - Una vez provocando una división entre cero
 # 4 Muestra por pantalla el resultado de ambas llamadas.
 
+def division_segura(a, b):
+    try:
+        resultado = a/b
+        return resultado
+    except ZeroDivisionError:
+        return None
+
+
+numero_1 = division_segura(4,2)
+numero_2 = division_segura(2,0)
+
+print(numero_1)
+print(numero_2)
