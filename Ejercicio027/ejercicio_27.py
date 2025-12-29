@@ -21,8 +21,7 @@ class Usuario:
     def es_mayor_de_edad(self):
         if self.edad >= 18:
             return True
-        if self.edad < 18:
-            return False
+        return False
         
 # Parte 3 - Clase UsuarioService
 # 4 Crea una clase UsuairioService con:
@@ -34,9 +33,8 @@ class Usuario:
 
 class UsuarioService:
     def __init__(self, usuarios=None):
-        if isinstance(usuarios, Usuario):
-            self.usuarios = usuarios
-        elif isinstance(usuarios, None):
+        self.usuarios = usuarios
+        if usuarios is None:
             self.usuarios = list()
 
     def buscar_por_nombre(self, nombre):
@@ -54,3 +52,19 @@ class UsuarioService:
 #       - Si es mayor de edad
 #   - Busca un nombre que NO exista y captura UsuarioNoEncontradoErro mostando un mensaje claro
 
+lista_usuarios = [Usuario("Victor", 12), Usuario("Lorena", 20), Usuario("Oscar", 19)]
+
+usuario_service = UsuarioService(lista_usuarios)
+
+prueba_1 = usuario_service.buscar_por_nombre("Victor")
+
+nombre_pruba_1 = prueba_1.nombre
+es_mayor_prueba_1 = prueba_1.es_mayor_de_edad()
+
+print(nombre_pruba_1)
+print(es_mayor_prueba_1)
+
+try:
+    prueba_2 = usuario_service.buscar_por_nombre("Jose")
+except UsuarioNoEncontradoError:
+    print("No se ha encontrado un usuario con este nombre")
