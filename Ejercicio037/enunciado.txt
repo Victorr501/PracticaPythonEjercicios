@@ -1,0 +1,15 @@
+# 1 Estructura 
+# Añade esta carpeta al proyecto:
+# mini_backend/
+#   tests/
+#       __init__.py
+#       test_dispatcher.py
+
+# 2 Qué debes testear (obligatorio)
+# En tests/test_dispatcher.py crea una clase TestDipatcher(unittest.TestCase) y escribe test independientes (métodos distintos) para estos casos:
+# Caso A - Crear usuario OK
+#   - Hacer POST /usuarios con body válido
+#   - Esperado:
+#       - status_code == 201
+#       - la respuesta tiene clave "data"
+#       - "data" incluye "nombre", "edad", "activo"
