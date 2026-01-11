@@ -114,7 +114,7 @@ def validar_update_usuario(data):
 #   - Si "activo" está en data, actualiza usuario.activo
 #   - Devuelve el usuario actualizado
 # - Si no lo encuentra:
-#   - raise UsuarioNoEncontradoError()
+#   - raise UsuarioNoEncontradoError() 
 
 class UsuarioRepository:
     def __init__(self):
