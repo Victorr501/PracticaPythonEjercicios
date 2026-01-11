@@ -1,15 +1,47 @@
-# 1 Estructura 
-# Añade esta carpeta al proyecto:
-# mini_backend/
-#   tests/
-#       __init__.py
-#       test_dispatcher.py
+1 Estructura 
+Añade esta carpeta al proyecto:
+mini_backend/
+    tests/
+        __init__.py
+       test_dispatcher.py
 
-# 2 Qué debes testear (obligatorio)
-# En tests/test_dispatcher.py crea una clase TestDipatcher(unittest.TestCase) y escribe test independientes (métodos distintos) para estos casos:
-# Caso A - Crear usuario OK
-#   - Hacer POST /usuarios con body válido
-#   - Esperado:
-#       - status_code == 201
-#       - la respuesta tiene clave "data"
-#       - "data" incluye "nombre", "edad", "activo"
+2 Qué debes testear (obligatorio)
+En tests/test_dispatcher.py crea una clase TestDipatcher(unittest.TestCase) y escribe test independientes (métodos distintos) para estos casos:
+Caso A - Crear usuario OK
+    - Hacer POST /usuarios con body válido
+    - Esperado:
+       - status_code == 201
+       - la respuesta tiene clave "data"
+       - "data" incluye "nombre", "edad", "activo"
+Caso B - Crear usuario duplicado
+    - Hacer dos veces POST /usuario con el mismo nombre
+    - Esperado en el segundo:
+        - status_code == 409
+        - "error" == "usuario duplicado"
+Caso C - Obtener usuario existente
+    - Crear primero el usuario
+    - Hacer GET /usaurios/<nombre>
+    - Esperado:
+        - status_code == 200
+        - "data" "nombre" == <nombre>
+Caso D - Actualizar usuario existente (parcial)
+    - Crear usuario
+    - Hacer PUT /usuario/<nombre> con body {"edad": 30}
+    - Esperado:
+        - status_code == 200
+    - Luego GET /usuarios/<nombre>
+        - status_code == 200
+        - ["data"]["edad"] == 30
+Caso E - Eliminar usaurio y comprobar 404 despues
+    - Crear usuario
+    - Hacer DELETE /usuario/<nombre>
+    - Esperado:
+        - status_code == 204
+    - Luego GET /usaurio/<nombre>
+        - status_code == 404
+        - "error" == "usaurio no encontrado"
+Caso F - Ruta no encontrada
+    - Hacer GET /ruta_invalida
+    - Esperado:
+        - status_code == 404
+        - "error" == "ruta no encontrada
