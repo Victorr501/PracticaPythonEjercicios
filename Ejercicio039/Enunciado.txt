@@ -1,0 +1,81 @@
+Objetivos
+Recrear tu CRUD de usuarios usando:
+    - FastAPI
+    - Pydantic (BaseModel)
+    - HTTP status codes reales
+    - Test con pytest + TestClient
+
+Parte 1 - Estructura
+Crear esta estructura
+
+mini_backend/
+    app/
+        __init__.py
+        errors.py
+        models.py
+        repository.py
+        service.py
+        api.py
+    test/
+        test_api.py
+    main.py
+
+Parte 2 - API con FastAPI(app/api.py)
+Crea una app FastAPI con estas rutas:
+
+1. POST /usuarios
+    - Body: {"nombre": str, "edad": int, "activo": bool}
+    - Respuesta:
+        - 201 + el usuario creado
+        - 409 si el usuario ya existe
+        - 400 si el body es inválido
+
+2. GET /usuarios/{nombre}
+    - Respuesta:
+        - 200 + usuario
+        - 404 si no existe
+
+3. PUT /usuarios/{nombre}
+    - Body: puede traer edad, activo o ambos (al menos uno)
+    - Respuesta:
+        - 200 + usuario actualizado
+        - 400 si el body es inválido
+        - 404 si el usuario no existe
+
+4 DETELETE /usuarios/{nombre}
+    -Respuesta
+        - 204 si se borra
+        - 404 si no existe
+
+Importante: aqui ya NO hay dispatcher. FastAPI enruta por ti
+
+Parte 3 - Pydantic models (app/models.py)
+Crea estos modelos:
+    - UsuarioCreate: nombre, edad, activo
+    - UsuarioUpdate: edad opcional, activo opcional
+        - Validación: debe venir al menos uno
+    - UsaurioOut: nombre, edad, activo
+
+Parte 4 - Service / Repo
+Reutiliza tu lógica del repository y servico (en memoria) igual que antes
+
+Parte 5 - main.py
+En main.py crea la app y deja todo listo para arrancar con:
+
+uvicorn main:app --reload
+
+Parte 6 - Test con pytest (test/test_api.py)
+Usa:
+    - from fastApi.TestClient import TestClient
+    - client = TestClient(app)
+
+Crea test para:
+    1 POST ok -> 201 y devuelve el usuario
+    2 POST duplicado -> 409
+    3 GET existente -> 200
+    4 GET inexistente -> 404
+    5 PUT existente con {"edad": 30} -> 200 y edad cambia
+    6 PUT con body inválido {} -> 400
+    7 DETELETE existente -> 204
+    8 DETELETE inexistente -> 404
+

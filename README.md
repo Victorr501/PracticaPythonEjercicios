@@ -64,7 +64,7 @@ Los ejercicios están organizados por carpeta, de forma incremental:
 Ejercicio001/
 Ejercicio002/
 ...
-Ejercicio038/
+Ejercicio039/
 ```
 
 Dentro de cada carpeta encontrarás un archivo `ejercicio_<n>.py` con el enunciado del ejercicio correspondiente.
