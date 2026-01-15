@@ -1,0 +1,45 @@
+Enunciado
+Ahora mismo tu app/api.py crea:
+ - repo = UsuarioRespository()
+ - service = UsuarioService(repo)
+Eso es cómo, pero en un backend real general problemas:
+ - estado compartido entre requests y test
+ - dificil de sustituir dependencias (mock, repoa alternativo, etc)
+Vas a refactorizar para que FastAPI cree y entregue el service mediante Depends, y en test puedas sobreescribir esa dependecia para que cada test use un repo limpio
+
+Requesito tecnicos
+Parte 1 - Refactor de API(sin repo/service globales)
+1 En app/api.py
+ - Prohibido tener repo =... y service = ... como variables globales
+ - Crea una funcion get_repo() que devuelva una instancia de UsuarioRespository
+ - Crea una funcion get_service(repo = Depends(get_repo)) que devuelva UsuarioService(repo)
+2 Modifica tus endpoints para recibir el service así:
+ - En cada endpoint añade un parametro service: UsuarioService = Depends(get_service)
+ - Dentro del endpoint usa ese service (sin usar variables globales)
+
+Importante:
+ - No camibes rutas ni status codes
+ - Mantén response_model y el comportamiento de errores
+
+Parte 2 - Asegura que el repo sea "unico" (1 instancia compoartida por app)
+Si get_repo() crea un repo nuevo en cada llamada, perderás el estado entre requests
+
+Tu obejtivo:
+ - El repo debe ser una única instancia compartida mientras la app esté viva (similar a lo que tenias antes),
+ pero sin variables global en api.py
+
+Pues lograrlo de cualquiera de estas formas:
+ - Crear el repo en main.py y pasarlo como dependecia
+ - usar app.state para guardar una instancia
+ - usar un contenedor/módulo dedicaco  de dependencias donde se inicializa una instancia
+
+Parte 3 - Test sin tocar atributos internos (sin repo._usuarios.clear())
+3 En test/test_api.py
+ - Prohibido importar repo y hacer repo._usuarios.clear()
+ - Debe aislar el estado usando dependency_overrides
+
+4 Crea una fixture client() que:
+ - Cree una instancia nueva de UsuarioRespository
+ - Cree una instancia nueva de UsuarioService(repo)
+ - Sobreescriba la dependecia get_service para que siempre devuelva ese service
+ - Devualva un TestClient(app)
