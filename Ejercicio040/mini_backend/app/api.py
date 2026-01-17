@@ -1,4 +1,4 @@
-from fastapi import APIRouter, HTTPException, Response, status
+from fastapi import APIRouter, HTTPException, Response, status, Request, Depends
 from app.models import UsuarioCreate, UsuarioUpdate, UsuarioOut
 from app.repository import UsuarioRepository
 from app.service import UsuarioService
@@ -6,11 +6,14 @@ from app.errors import UsuarioDuplicadoError, UsuarioNoEncontradoError, DatosUsu
 
 router = APIRouter(prefix="/usuarios", tags=["usuarios"])
 
-repo = UsuarioRepository()
-service = UsuarioService(repo)
+def get_repo(request: Request) -> UsuarioRepository:
+    return request.app.state.repo
+
+def get_service(repo: UsuarioRepository = Depends(get_repo)) -> UsuarioService:
+    return UsuarioService(repo)
 
 @router.post("", status_code=201, response_model=UsuarioOut)
-def post_usuario(body: UsuarioCreate):
+def post_usuario(body: UsuarioCreate, service: UsuarioService = Depends(get_service)):
     try:
         return service.crear_usuario(body.model_dump())
     except UsuarioDuplicadoError:
@@ -19,14 +22,14 @@ def post_usuario(body: UsuarioCreate):
         raise HTTPException(status_code=400, detail="Datos invalidos")
     
 @router.get("/{nombre}", response_model=UsuarioOut)
-def get_usuario(nombre: str):
+def get_usuario(nombre: str, service: UsuarioService = Depends(get_service)):
     try:
         return service.obtener_usuario(nombre)
     except UsuarioNoEncontradoError:
         raise HTTPException(status_code=404, detail="Usuario no encontrado")
     
 @router.put("/{nombre}", response_model=UsuarioOut)
-def put_usuario(nombre: str, body: UsuarioUpdate):
+def put_usuario(nombre: str, body: UsuarioUpdate, service: UsuarioService = Depends(get_service)):
     data = body.model_dump(exclude_none=True)
     try:
         return service.actualizar_usuario(nombre, data)
@@ -36,7 +39,7 @@ def put_usuario(nombre: str, body: UsuarioUpdate):
         raise HTTPException(status_code=404, detail="Usuario no encontrado")
     
 @router.delete("/{nombre}", status_code=204)
-def delete_usuario(nombre: str):
+def delete_usuario(nombre: str, service: UsuarioService = Depends(get_service)):
     try:
         service.eliminar_usuario(nombre)
         return Response(status_code=status.HTTP_204_NO_CONTENT)
