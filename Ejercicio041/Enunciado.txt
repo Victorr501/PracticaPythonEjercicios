@@ -1,0 +1,55 @@
+Parte 1 - Define el "contrato" del repositorio
+1 Crea una rchivo nuevo:
+    - app/contracts.py
+2 Define un Protocol llamado UsuarioRepoProtocol que declare estos métoods (solo firmas):
+    - agregar(usuario)
+    - buscar_por_nombre(nombre)
+    - eliminar_por_nombre(nombre)
+    - actualizar_por_nombre(nombre, data)
+
+Restricciones:
+    - Debes usar from typing import Protocol
+    - No implementar lógico dentro del Protocol(solo métoods con ...)
+    - No user clases abstractas ABC aquí (este ejercicio es con Protocol)
+
+Parte 2 - Service depende del contrato, no de la clase
+3 Modifica UsuarioService para que:
+    - En __init__, el parámetro repo este tipado como UsuarioRepoProtocol
+    - El resto del Service funcione igual
+
+Restricciones:
+    - No cambies la lógica del Service, solo el tipo y las dependecias
+
+Parte 3 - Crea dos repositorios: "memoria" y "fake"
+4 Tu usuarioRepository actual (memoria) debe cumplir el contrato sin cambiar su comportamiento
+5 Crea un repositorio "fake" solo para test:
+    - tests/fakes.py
+    - class FakeUsuarioRepo:
+        - Debe implementar los mismos métodos del contrato
+        - Debe guardar llamadas realizadas en una lista por ejercicio:
+            - self.calls.append(("agregar", usuario.nombre))
+            - self.calls.append(("buscar_por_nombre", nombre))
+        - Puedes devolver datos "prefabricados" en buscar_por_nombre según lo que tú decidas para el test
+
+Parte 4 - Test unitarios del Service (sin TestClient)
+6 Crea test/test_service_unit.py con pytest
+
+Crea al menos estos tests:
+
+A. test_service_crear_usuario_llama_agregar
+    - Dato un FakeUsuarioRepo
+    - Cuando llama a service.crear_usuario(data_ok)
+    - Entonces:
+        - Se registró una llamada a  ("agregar", "<nombre>")
+        - El resultado devuelto tiene "nombre", "edad", "activo"
+    
+B. test_service_obtener_usuario_llama_buscar
+    - Configura el fake para que buscar_por_nombre("Victor") devuelva un usuario válido
+    - Llama a service.obtener_usuario("Victor")
+    - Comprueba:
+        - Se registró la llamada buscar_por_nombre
+        - Devuelve dict con "nombre" == "Victor"
+
+C. test_service_eliminar_usuario_llama_eliminar
+    - Llama a service.eliminar_usuario("Victor")
+    - Comprueba que el fake registró la llamada a eliminar
